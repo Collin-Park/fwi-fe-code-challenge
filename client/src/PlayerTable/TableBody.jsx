@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Flags from 'react-world-flags';
-
-import Avatar from '../Avatar';
 import { COUNTRIES } from '../constants';
-
+import Player from './Player';
 const TableBody = ({ players }) => {
   return (
     <table
@@ -14,28 +11,7 @@ const TableBody = ({ players }) => {
     >
       <tbody>
         {players.map(({ id, name, country, winnings, imageUrl }) => (
-          <tr key={id} role="row" className="table__row">
-            <td role="gridcell" className="table__avatar">
-              <Avatar src={imageUrl} />
-            </td>
-            <td role="gridcell" className="table__player">
-              {name}
-            </td>
-            <td role="gridcell" className="table__winnings">
-              {winnings.toLocaleString(undefined, {
-                style: 'currency',
-                currency: 'USD',
-              })}
-            </td>
-            <td role="gridcell" className="table__native">
-              <div className="country">
-                <Avatar>
-                  <Flags code={country} alt="" />
-                </Avatar>
-                {country}
-              </div>
-            </td>
-          </tr>
+          <Player key={id} props={{ name, country, winnings, imageUrl }} />
         ))}
       </tbody>
     </table>
