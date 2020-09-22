@@ -1,0 +1,37 @@
+{
+  "name": "fwi-fe-code-challenge",
+  "private": true,
+  "version": "1.0.0",
+  "description": "This is the code challenge for applying to FWI's FE Developer Position.",
+  "scripts": {
+    "start-server": "yarn workspace server start",
+    "start-client": "yarn workspace client start",
+    "start": "npm-run-all -p start-server start-client"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.5"
+  },
+  "engines": {
+    "node": ">=8.10.0"
+  },
+  "workspaces": [
+    "client/",
+    "server/"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.md": [
+      "prettier --write"
+    ],
+    "{client,server}/src/**/*.{js,jsx,ts,tsx,scss}": [
+      "prettier --write"
+    ]
+  }
+}
