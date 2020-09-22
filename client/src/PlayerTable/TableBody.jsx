@@ -11,7 +11,7 @@ const TableBody = ({ players }) => {
     >
       <tbody>
         {players.map(({ id, name, country, winnings, imageUrl }) => (
-          <Player key={id} props={{ name, country, winnings, imageUrl }} />
+          <Player key={id} props={{ id, name, country, winnings, imageUrl }} />
         ))}
       </tbody>
     </table>

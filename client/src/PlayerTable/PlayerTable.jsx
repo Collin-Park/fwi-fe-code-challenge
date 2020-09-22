@@ -20,6 +20,7 @@ const PlayerTable = () => {
       });
 
       const json = await response.json();
+      console.log(json);
       dispatch(fetchPlayersSuccess(json));
     })();
   }, [dispatch]);
