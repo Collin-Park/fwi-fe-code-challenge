@@ -1,15 +1,8 @@
 import React from 'react';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import { Modal, Button, Form, Col } from 'react-bootstrap';
+import { Modal, Form, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { COUNTRIES } from '../constants';
 import FormInput from '../FormInput/FormInput';
-
-const schema = yup.object({
-  name: yup.string().required(),
-  winnings: yup.number().positive().integer().required(),
-});
 
 export default function PopupModal({ props }) {
   const { show, country, handleClose, name, winnings, id, imageUrl } = props;
@@ -22,14 +15,6 @@ export default function PopupModal({ props }) {
       <Modal.Body>
         <FormInput props={props} />
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleClose}>
-          Save Changes
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 }
