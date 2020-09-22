@@ -1,5 +1,5 @@
 import React from 'react';
-
+import CreateNew from './CreateNew/CreateNew';
 import Header from './Header/Header';
 import PlayerTable from './PlayerTable/PlayerTable';
 
@@ -19,7 +19,7 @@ const App = () => {
               <PlayerTable />
             </Route>
             <Route path="/create">
-              <div>create</div>
+              <CreateNew />
             </Route>
           </Switch>
         </div>

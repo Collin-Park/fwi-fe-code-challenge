@@ -25,9 +25,12 @@ const schema = yup.object({
 });
 
 export default function FormInput({ props }) {
-  const { name, winnings, country, id, imageUrl } = props;
+  const name = props?.name;
+  const winnings = props?.winnings;
+  const country = props?.country;
+  const id = props?.id;
+  const imageUrl = props?.imageUrl;
   const countryLong = COUNTRIES[country];
-  console.log(country);
   return (
     <Formik
       validationSchema={schema}
@@ -53,7 +56,7 @@ export default function FormInput({ props }) {
         <Form noValidate onSubmit={handleSubmit}>
           <Form.Row>
             <Form.Group as={Col} md="6" controlId="validationFormik01">
-              <Form.Label>Name</Form.Label>
+              <Form.Label>Name*</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
@@ -66,7 +69,7 @@ export default function FormInput({ props }) {
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
             <Form.Group as={Col} md="6" controlId="validationFormik02">
-              <Form.Label>Winnings</Form.Label>
+              <Form.Label>Winnings*</Form.Label>
               <Form.Control
                 type="text"
                 name="winnings"
@@ -81,23 +84,7 @@ export default function FormInput({ props }) {
           </Form.Row>
           <Form.Row>
             <Form.Group as={Col} md="12" controlId="validationFormik03">
-              <Form.Label>Country</Form.Label>
-              <Form.Control
-                as="select"
-                name="country"
-                value={values.country}
-                onChange={handleChange}
-                isInvalid={!!errors.country}
-                isValid={touched.country && !errors.country}
-                onBlur={handleBlur}
-              >
-                {renderCountries()}
-              </Form.Control>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col} md="12" controlId="validationFormik03">
-              <Form.Label>Country</Form.Label>
+              <Form.Label>Country*</Form.Label>
               <Form.Control
                 as="select"
                 name="country"
@@ -128,6 +115,7 @@ export default function FormInput({ props }) {
           </Form.Row>
 
           <Button type="submit">Submit form</Button>
+          <Form.Row className="ml-1">*required</Form.Row>
         </Form>
       )}
     </Formik>
@@ -136,10 +124,10 @@ export default function FormInput({ props }) {
 
 FormInput.propTypes = {
   props: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    id: PropTypes.string,
+    name: PropTypes.string,
     country: PropTypes.oneOf(Object.keys(COUNTRIES)),
-    winnings: PropTypes.number.isRequired,
-    imageUrl: PropTypes.string.isRequired,
-  }).isRequired,
+    winnings: PropTypes.number,
+    imageUrl: PropTypes.string,
+  }),
 };
