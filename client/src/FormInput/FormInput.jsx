@@ -33,11 +33,7 @@ const schema = yup.object({
 
 export default function FormInput({ props }) {
   const dispatch = useDispatch();
-  const name = props?.name;
-  const winnings = props?.winnings;
-  const country = props?.country;
-  const id = props?.id;
-  const imageUrl = props?.imageUrl;
+  const { name, winnings, country, id, imageUrl } = props;
   const countryLong = COUNTRIES[country];
 
   if (id) {
@@ -58,7 +54,7 @@ export default function FormInput({ props }) {
       console.log(dataToSend);
       //do patch
       axios
-        .patch(`${baseUrl}players/${id}`, dataToSend)
+        .patch(`${baseUrl}/players/${id}`, dataToSend)
         .then((data) => {
           console.log('success', data);
           fetchPlayers(dispatch);
@@ -69,7 +65,7 @@ export default function FormInput({ props }) {
     } else {
       //do create
       axios
-        .post(`${baseUrl}players`, dataToSend)
+        .post(`${baseUrl}/players`, dataToSend)
         .then((data) => {
           console.log('success', data);
           fetchPlayers(dispatch);
@@ -79,6 +75,28 @@ export default function FormInput({ props }) {
         });
     }
   };
+
+  const deletePlayer = () => {
+    var result = window.confirm(
+      'Are you sure you want to delete? Data cannot be retrieved once deleted!'
+    );
+    if (result) {
+      console.log('yes');
+      axios
+        .delete(`${baseUrl}/players/${id}`)
+        .then((data) => {
+          console.log('success', data);
+          fetchPlayers(dispatch);
+        })
+        .catch((err) => {
+          console.log('failure', err);
+        });
+      //Logic to delete the item
+    } else {
+      console.log('no');
+    }
+  };
+
   return (
     <Formik
       validationSchema={schema}
@@ -161,6 +179,15 @@ export default function FormInput({ props }) {
           </Form.Row>
 
           <Button type="submit">Submit form</Button>
+          {id ? (
+            <Button
+              onClick={deletePlayer}
+              className="float-right"
+              variant="danger"
+            >
+              Delete
+            </Button>
+          ) : null}
           <Form.Row className="ml-1">*required</Form.Row>
         </Form>
       )}
