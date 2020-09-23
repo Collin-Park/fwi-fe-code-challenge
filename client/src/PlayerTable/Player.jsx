@@ -1,27 +1,14 @@
 import React, { useState, useEffect } from 'react';
+
 import Flags from 'react-world-flags';
 import Avatar from '../Avatar';
 import PropTypes from 'prop-types';
 import { COUNTRIES } from '../constants';
 import PopupModal from '../PopupModal/PopupModal';
 
-export default function Player({ props }) {
+function WrappedPlayer({ props }) {
+  const { name, country, winnings, imageUrl, id } = props;
   const [show, setShow] = useState(false);
-  const [name, setName] = useState('');
-  const [country, setCountry] = useState('');
-  const [winnings, setWinnings] = useState(0);
-  const [imageUrl, setImageUrl] = useState('');
-  const [id, setId] = useState('');
-
-  useEffect(() => {
-    setName(props?.name);
-    setCountry(props?.country);
-    setWinnings(props?.winnings);
-    setImageUrl(props?.imageUrl);
-    setId(props?.id);
-    return () => {};
-  }, [props]);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -50,12 +37,12 @@ export default function Player({ props }) {
         </td>
       </tr>
 
-      <PopupModal props={{ handleClose, handleShow, show, ...props }} />
+      <PopupModal props={{ handleClose, show, ...props }} />
     </>
   );
 }
 
-Player.propTypes = {
+WrappedPlayer.propTypes = {
   props: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -64,3 +51,6 @@ Player.propTypes = {
     imageUrl: PropTypes.string.isRequired,
   }).isRequired,
 };
+
+const Player = React.memo(WrappedPlayer);
+export default Player;

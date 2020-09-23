@@ -1,32 +1,26 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { fetchPlayersSuccess } from '../appState/actions';
+import { fetchPlayers } from '../appState/actions';
 
 import './PlayerTable.scss';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 
-const getPlayers = (state) => state.playerIds.map((id) => state.players[id]);
+const getPlayers = (state) => {
+  console.log(state);
+  // return state.players
+  return state.playerIds.map((id) => state.players[id]);
+};
 
-const PlayerTable = () => {
+const WrappedPlayerTable = () => {
+  console.log('upper');
   const dispatch = useDispatch();
   useEffect(() => {
-    (async function fetchPlayers() {
-      const response = await fetch('http://localhost:3001/players', {
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-
-      const json = await response.json();
-      console.log(json);
-      dispatch(fetchPlayersSuccess(json));
-    })();
+    fetchPlayers(dispatch);
   }, [dispatch]);
 
   const players = useSelector(getPlayers);
-
   return (
     <div
       id="player-table-grid"
@@ -40,4 +34,5 @@ const PlayerTable = () => {
   );
 };
 
+const PlayerTable = React.memo(WrappedPlayerTable);
 export default PlayerTable;

@@ -11,9 +11,7 @@ const App = () => {
       <Router>
         <div>
           <Header />
-
           <hr />
-
           <Switch>
             <Route exact path="/">
               <PlayerTable />

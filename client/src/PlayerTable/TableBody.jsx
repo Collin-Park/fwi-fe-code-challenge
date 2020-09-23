@@ -10,9 +10,16 @@ const TableBody = ({ players }) => {
       className="table table--body"
     >
       <tbody>
-        {players.map(({ id, name, country, winnings, imageUrl }) => (
-          <Player key={id} props={{ id, name, country, winnings, imageUrl }} />
-        ))}
+        {Array.isArray(players) ? (
+          players.map(({ id, name, country, winnings, imageUrl }) => (
+            <Player
+              key={id}
+              props={{ id, name, country, winnings, imageUrl }}
+            />
+          ))
+        ) : (
+          <div />
+        )}
       </tbody>
     </table>
   );
