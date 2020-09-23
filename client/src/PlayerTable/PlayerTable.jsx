@@ -8,14 +8,13 @@ import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 
 const getPlayers = (state) => {
-  console.log(state);
   // return state.players
   return state.playerIds.map((id) => state.players[id]);
 };
 
 const WrappedPlayerTable = () => {
-  console.log('upper');
   const dispatch = useDispatch();
+
   useEffect(() => {
     fetchPlayers(dispatch);
   }, [dispatch]);
