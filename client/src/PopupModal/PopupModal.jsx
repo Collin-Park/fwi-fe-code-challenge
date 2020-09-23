@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Form, Col } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { COUNTRIES } from '../constants';
 import FormInput from '../FormInput/FormInput';

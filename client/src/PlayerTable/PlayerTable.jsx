@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { fetchPlayers } from '../appState/actions';
+import { fetchPlayersWithParams } from '../appState/actions';
 
 import './PlayerTable.scss';
 import TableHeader from './TableHeader';
@@ -14,12 +14,15 @@ const getPlayers = (state) => {
 
 const WrappedPlayerTable = () => {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    fetchPlayers(dispatch);
-  }, [dispatch]);
+  const pagination = useSelector((state) => state.pagination);
+  const { category = '', direction = '', size = '', from = '' } = pagination;
 
   const players = useSelector(getPlayers);
+
+  useEffect(() => {
+    fetchPlayersWithParams(dispatch, category, direction, size, from);
+  }, [dispatch, category, direction, size, from]);
+
   return (
     <div
       id="player-table-grid"

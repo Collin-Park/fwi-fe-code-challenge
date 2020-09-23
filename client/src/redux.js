@@ -1,7 +1,9 @@
 import rootReducer from './appState/index';
 import { createStore } from 'redux';
 
-const initialState = {};
+const initialState = {
+  pagination: { category: '', direction: '', size: 4, from: '' },
+};
 
 export const store = createStore(
   rootReducer,

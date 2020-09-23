@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { COUNTRIES, baseUrl } from '../constants';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPlayers } from '../appState/actions';
+import { fetchPlayersWithParams } from '../appState/actions';
 
 const renderCountries = () => {
   let countryArray = Object.values(COUNTRIES)?.sort();
@@ -35,6 +35,8 @@ export default function FormInput({ props }) {
   const dispatch = useDispatch();
   const { name, winnings, country, id, imageUrl } = props;
   const countryLong = COUNTRIES[country];
+  const pagination = useSelector((state) => state.pagination);
+  const { category = '', direction = '', size = '', from = '' } = pagination;
 
   if (id) {
     schema.fields.imageUrl._exclusive.matches = true;
@@ -57,7 +59,7 @@ export default function FormInput({ props }) {
         .patch(`${baseUrl}/players/${id}`, dataToSend)
         .then((data) => {
           console.log('success', data);
-          fetchPlayers(dispatch);
+          fetchPlayersWithParams(dispatch, category, direction, size, from);
         })
         .catch((err) => {
           console.log('failure', err);
@@ -68,7 +70,7 @@ export default function FormInput({ props }) {
         .post(`${baseUrl}/players`, dataToSend)
         .then((data) => {
           console.log('success', data);
-          fetchPlayers(dispatch);
+          fetchPlayersWithParams(dispatch, category, direction, size, from);
         })
         .catch((err) => {
           console.log('failure', err);
@@ -86,7 +88,7 @@ export default function FormInput({ props }) {
         .delete(`${baseUrl}/players/${id}`)
         .then((data) => {
           console.log('success', data);
-          fetchPlayers(dispatch);
+          fetchPlayersWithParams(dispatch, category, direction, size, from);
         })
         .catch((err) => {
           console.log('failure', err);
@@ -101,6 +103,7 @@ export default function FormInput({ props }) {
     <Formik
       validationSchema={schema}
       onSubmit={(e) => submitForm(e)}
+      onBlur={(e) => console.log(e)}
       initialValues={{
         name,
         winnings,
@@ -118,6 +121,7 @@ export default function FormInput({ props }) {
         errors,
       }) => (
         <Form noValidate onSubmit={handleSubmit}>
+          {id ? null : <h1>Create a New Player</h1>}
           <Form.Row>
             <Form.Group as={Col} md="6" controlId="validationFormik01">
               <Form.Label>Name*</Form.Label>
@@ -164,7 +168,7 @@ export default function FormInput({ props }) {
           </Form.Row>
           <Form.Row>
             <Form.Group as={Col} md="12" controlId="validationFormik04">
-              <Form.Label>Image URL</Form.Label>
+              <Form.Label>Image URL{id ? <span>*</span> : null}</Form.Label>
               <Form.Control
                 type="text"
                 name="imageUrl"

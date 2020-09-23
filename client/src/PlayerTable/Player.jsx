@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import Flags from 'react-world-flags';
 import Avatar from '../Avatar';
@@ -7,7 +7,7 @@ import { COUNTRIES } from '../constants';
 import PopupModal from '../PopupModal/PopupModal';
 
 function WrappedPlayer({ props }) {
-  const { name, country, winnings, imageUrl, id } = props;
+  const { name, country, winnings, imageUrl } = props;
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
