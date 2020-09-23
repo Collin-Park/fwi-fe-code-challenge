@@ -27,18 +27,6 @@ export async function fetchPlayersWithParams(
       },
     }
   );
-
-  const data = response?.data;
-  dispatch(fetchPlayersSuccess(data));
-}
-
-export async function fetchPlayers(dispatch) {
-  const response = await axios.get('http://localhost:3001/players', {
-    headers: {
-      Accept: 'application/json',
-    },
-  });
-
   const data = response?.data;
   dispatch(fetchPlayersSuccess(data));
 }

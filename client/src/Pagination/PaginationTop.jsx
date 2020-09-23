@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Col } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ const schema = yup.object({
 export default function PaginationTop() {
   const pagination = useSelector((state) => state.pagination);
   const dispatch = useDispatch();
-  const { size, total, active } = pagination;
+  const { size, total } = pagination;
   const calculateNewNumbers = (size, total, active) => {
     let minPage = 1;
     let maxPage = Math.ceil(total / size);
