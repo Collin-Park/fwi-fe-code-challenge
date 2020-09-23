@@ -1,27 +1,40 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { COUNTRIES } from '../constants';
-import Player from './Player';
+import PaginationBottom from '../Pagination/PaginationBottom';
+import PaginationTop from '../Pagination/PaginationTop';
+// import Player from './Player';
+const Player = React.lazy(() => import('./Player'));
 const TableBody = ({ players }) => {
   return (
-    <table
-      id="player-table-body"
-      role="presentation"
-      className="table table--body"
-    >
-      <tbody>
-        {Array.isArray(players) ? (
-          players.map(({ id, name, country, winnings, imageUrl }) => (
-            <Player
-              key={id}
-              props={{ id, name, country, winnings, imageUrl }}
-            />
-          ))
-        ) : (
-          <div />
-        )}
-      </tbody>
-    </table>
+    <>
+      <table
+        id="player-table-body"
+        role="presentation"
+        className="table table--body"
+      >
+        <tbody>
+          <PaginationTop />
+          {Array.isArray(players) ? (
+            players.map(({ id, name, country, winnings, imageUrl }) => (
+              <Suspense
+                key={id}
+                fallback={
+                  <tr>
+                    <td>Loading . . .</td>
+                  </tr>
+                }
+              >
+                <Player props={{ id, name, country, winnings, imageUrl }} />
+              </Suspense>
+            ))
+          ) : (
+            <div />
+          )}
+        </tbody>
+      </table>
+      <PaginationBottom />
+    </>
   );
 };
 
