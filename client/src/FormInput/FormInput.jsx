@@ -3,7 +3,10 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Button, Form, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { COUNTRIES } from '../constants';
+import { COUNTRIES, baseUrl } from '../constants';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPlayers } from '../appState/actions';
 
 const renderCountries = () => {
   let countryArray = Object.values(COUNTRIES)?.sort();
@@ -12,6 +15,10 @@ const renderCountries = () => {
   });
 };
 
+function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
+
 const schema = yup.object({
   name: yup.string().required(),
   winnings: yup.number().positive().integer().required(),
@@ -19,24 +26,63 @@ const schema = yup.object({
   imageUrl: yup
     .string()
     .matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      /((https?):\/\/)?(www.)?(i.pravatar.cc\/)[a-z0-9]+(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
       'Enter correct url!'
     ),
 });
 
 export default function FormInput({ props }) {
+  const dispatch = useDispatch();
   const name = props?.name;
   const winnings = props?.winnings;
   const country = props?.country;
   const id = props?.id;
   const imageUrl = props?.imageUrl;
   const countryLong = COUNTRIES[country];
+
+  if (id) {
+    schema.fields.imageUrl._exclusive.matches = true;
+  }
+
+  const submitForm = (e) => {
+    const { country, winnings, name, imageUrl } = e;
+    const countryShort = getKeyByValue(COUNTRIES, country);
+    const winningsInt = Number(winnings);
+    const dataToSend = {
+      country: countryShort,
+      winnings: winningsInt,
+      name,
+      imageUrl,
+    };
+    if (id) {
+      console.log(dataToSend);
+      //do patch
+      axios
+        .patch(`${baseUrl}players/${id}`, dataToSend)
+        .then((data) => {
+          console.log('success', data);
+          fetchPlayers(dispatch);
+        })
+        .catch((err) => {
+          console.log('failure', err);
+        });
+    } else {
+      //do create
+      axios
+        .post(`${baseUrl}players`, dataToSend)
+        .then((data) => {
+          console.log('success', data);
+          fetchPlayers(dispatch);
+        })
+        .catch((err) => {
+          console.log('failure', err);
+        });
+    }
+  };
   return (
     <Formik
       validationSchema={schema}
-      onSubmit={(e) => {
-        console.log(e);
-      }}
+      onSubmit={(e) => submitForm(e)}
       initialValues={{
         name,
         winnings,
