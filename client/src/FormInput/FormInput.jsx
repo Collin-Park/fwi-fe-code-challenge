@@ -82,7 +82,7 @@ export default function FormInput({ props }) {
     <Formik
       validationSchema={schema}
       onSubmit={(e) => submitForm(e)}
-      onBlur={(e) => console.log(e)}
+      onBlur
       initialValues={{
         name,
         winnings,
