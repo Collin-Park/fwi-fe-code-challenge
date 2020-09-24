@@ -1,50 +1,31 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
-import * as yup from 'yup';
 import { Button, Form, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { COUNTRIES, baseUrl } from '../constants';
-import axios from 'axios';
+import { COUNTRIES } from '../constants';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPlayersWithParams } from '../appState/actions';
+import { apiCalls, getKeyByValue } from '../util';
+import { useHistory } from 'react-router-dom';
+import { formInputSchema } from '../schema';
 
-const renderCountries = () => {
-  let countryArray = Object.values(COUNTRIES)?.sort();
-  return countryArray.map((x, _) => {
-    return <option key={x + _}>{x}</option>;
-  });
-};
-
-function getKeyByValue(object, value) {
-  return Object.keys(object).find((key) => object[key] === value);
-}
-
-const schema = yup.object({
-  name: yup.string().required(),
-  winnings: yup.number().positive().integer().required(),
-  country: yup.string().required(),
-  imageUrl: yup
-    .string()
-    .matches(
-      /((https?):\/\/)?(www.)?(i.pravatar.cc\/)[a-z0-9]+(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      'Enter correct url!'
-    ),
-});
+const schema = formInputSchema;
 
 export default function FormInput({ props }) {
+  const history = useHistory();
   const dispatch = useDispatch();
   const [completed, setCompleted] = useState(false);
   const { name, winnings, country, id, imageUrl, handleClose } = props;
   const countryLong = COUNTRIES[country];
   const pagination = useSelector((state) => state.pagination);
   const { category = '', direction = '', size = '', from = '' } = pagination;
+  const hasId = !!id;
 
-  if (id) {
+  if (hasId) {
     schema.fields.imageUrl._exclusive.matches = true;
   }
 
-  const submitForm = (props) => {
-    const { country, winnings, name, imageUrl } = props;
+  const submitForm = (submissionProps) => {
+    const { country, winnings, name, imageUrl } = submissionProps;
     const countryShort = getKeyByValue(COUNTRIES, country);
     const winningsInt = Number(winnings);
     const dataToSend = {
@@ -53,48 +34,47 @@ export default function FormInput({ props }) {
       name,
       imageUrl,
     };
-    if (id) {
-      axios
-        .patch(`${baseUrl}/players/${id}`, dataToSend)
-        .then((data) => {
-          fetchPlayersWithParams(dispatch, category, direction, size, from);
-          handleClose();
-        })
-        .catch((err) => {
-          console.log('failure', err);
-        });
+    if (hasId) {
+      const updatePlayerParams = {
+        dataToSend,
+        dispatch,
+        category,
+        direction,
+        size,
+        from,
+        id,
+        handleClose,
+      };
+      apiCalls.updatePlayer(updatePlayerParams);
     } else {
-      axios
-        .post(`${baseUrl}/players`, dataToSend)
-        .then((data) => {
-          fetchPlayersWithParams(dispatch, category, direction, size, from);
-          setCompleted(
-            "Congratulations, you've created a new player! you will be redirected to the list page soon"
-          );
-          setTimeout(() => {
-            window.open('/');
-          }, 3000);
-        })
-        .catch((err) => {
-          console.log('failure', err);
-          setCompleted('Sorry something went wrong, pleae try again later');
-        });
+      const createPlayerParams = {
+        dataToSend,
+        dispatch,
+        category,
+        direction,
+        size,
+        from,
+        setCompleted,
+        history,
+      };
+      apiCalls.createPlayer(createPlayerParams);
     }
   };
 
-  const deletePlayer = () => {
+  const handleDeletePlayer = () => {
     var result = window.confirm(
       'Are you sure you want to delete? Data cannot be retrieved once deleted!'
     );
     if (result) {
-      axios
-        .delete(`${baseUrl}/players/${id}`)
-        .then(() => {
-          fetchPlayersWithParams(dispatch, category, direction, size, from);
-        })
-        .catch((err) => {
-          console.log('failure', err);
-        });
+      const deletePlayerParams = {
+        dispatch,
+        category,
+        direction,
+        size,
+        from,
+        id,
+      };
+      apiCalls.deletePlayer(deletePlayerParams);
     }
   };
 
@@ -172,7 +152,9 @@ export default function FormInput({ props }) {
             </Form.Row>
             <Form.Row>
               <Form.Group as={Col} md="12" controlId="validationFormik04">
-                <Form.Label>Image URL{id ? <span>*</span> : null}</Form.Label>
+                <Form.Label>
+                  Image URL{hasId ? <span>*</span> : null}
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="imageUrl"
@@ -187,9 +169,9 @@ export default function FormInput({ props }) {
             </Form.Row>
 
             <Button type="submit">Submit form</Button>
-            {id ? (
+            {hasId ? (
               <Button
-                onClick={deletePlayer}
+                onClick={handleDeletePlayer}
                 className="float-right"
                 variant="danger"
               >
@@ -198,7 +180,7 @@ export default function FormInput({ props }) {
             ) : null}
             <Form.Row className="ml-1">*required</Form.Row>
           </Form>
-          <h1 className={`display-1 text-center ${completed ? '' : 'd-none'}`}>
+          <h1 className={`display-2 text-center ${completed ? '' : 'd-none'}`}>
             {completed}
           </h1>
         </>
@@ -215,4 +197,11 @@ FormInput.propTypes = {
     winnings: PropTypes.number,
     imageUrl: PropTypes.string,
   }),
+};
+
+const renderCountries = () => {
+  let countryArray = Object.values(COUNTRIES)?.sort();
+  return countryArray.map((x, _) => {
+    return <option key={x + _}>{x}</option>;
+  });
 };

@@ -10,13 +10,13 @@ const mergeFromRequest = (state, data) => {
 };
 
 const mergeFromFetch = (state, data) => {
-  const { size, from, ...dataToPull } = data;
+  const { size, from, ...dataToUse } = data;
   let newState;
-  newState = { ...state, ...dataToPull };
+  newState = { ...state, ...dataToUse };
   return newState;
 };
 
-export default function pagination(state = {}, action) {
+export default function pagination(state = { from: 0 }, action) {
   switch (action.type) {
     case PAGINATION_CATEGORY_DIRECTION:
       return mergeFromRequest(state, action.payload.data);

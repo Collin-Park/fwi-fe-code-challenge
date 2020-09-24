@@ -11,30 +11,33 @@ const TableHeader = () => {
     const target = e.target;
     const text = target.innerText;
     const category = target.getAttribute('data-id');
-    toggleSort(
-      'Player',
+    const playerParams = {
+      stringMatch: 'Player',
       text,
       dispatch,
       paginationState,
       category,
-      setDirection
-    );
-    toggleSort(
-      'Winnings',
+      setDirection,
+    };
+    const winningsParams = {
+      stringMatch: 'Winnings',
       text,
       dispatch,
       paginationState,
       category,
-      setDirection
-    );
-    toggleSort(
-      'Native',
+      setDirection,
+    };
+    const nativeParams = {
+      stringMatch: 'Native',
       text,
       dispatch,
       paginationState,
       category,
-      setDirection
-    );
+      setDirection,
+    };
+    toggleSort(playerParams);
+    toggleSort(winningsParams);
+    toggleSort(nativeParams);
   };
 
   return (

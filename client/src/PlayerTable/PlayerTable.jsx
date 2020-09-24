@@ -1,22 +1,16 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { fetchPlayersWithParams } from '../appState/actions';
-
+import { getPlayers } from '../util';
 import './PlayerTable.scss';
+
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
-
-const getPlayers = (state) => {
-  // return state.players
-  return state.playerIds.map((id) => state.players[id]);
-};
 
 const WrappedPlayerTable = () => {
   const dispatch = useDispatch();
   const pagination = useSelector((state) => state.pagination);
   const { category = '', direction = '', size = '', from = '' } = pagination;
-
   const players = useSelector(getPlayers);
 
   useEffect(() => {
