@@ -1,30 +1,21 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { fetchPlayersSuccess } from '../appState/actions';
-
+import { fetchPlayersWithParams } from '../appState/actions';
+import { getPlayers } from '../util';
 import './PlayerTable.scss';
+
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 
-const getPlayers = (state) => state.playerIds.map((id) => state.players[id]);
-
-const PlayerTable = () => {
+const WrappedPlayerTable = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    (async function fetchPlayers() {
-      const response = await fetch('http://localhost:3001/players', {
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-
-      const json = await response.json();
-      dispatch(fetchPlayersSuccess(json));
-    })();
-  }, [dispatch]);
-
+  const pagination = useSelector((state) => state.pagination);
+  const { category = '', direction = '', size = '', from = '' } = pagination;
   const players = useSelector(getPlayers);
+
+  useEffect(() => {
+    fetchPlayersWithParams(dispatch, category, direction, size, from);
+  }, [dispatch, category, direction, size, from]);
 
   return (
     <div
@@ -39,4 +30,5 @@ const PlayerTable = () => {
   );
 };
 
+const PlayerTable = React.memo(WrappedPlayerTable);
 export default PlayerTable;

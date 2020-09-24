@@ -31,6 +31,7 @@ $header-height: 2.5rem;
 
     &:hover {
       background-color: $pearl;
+      cursor: pointer;
     }
 
     &:not(:last-child) {
@@ -46,6 +47,14 @@ $header-height: 2.5rem;
     height: $header-height;
     text-align: left;
     vertical-align: middle;
+
+    &:not(:first-child) {
+      cursor: pointer;
+
+      &:hover {
+        background-color: $fog;
+      }
+    }
   }
 
   &__avatar {

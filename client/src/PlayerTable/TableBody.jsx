@@ -1,44 +1,40 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
-import Flags from 'react-world-flags';
-
-import Avatar from '../Avatar';
 import { COUNTRIES } from '../constants';
-
+import PaginationBottom from '../Pagination/PaginationBottom';
+import PaginationTop from '../Pagination/PaginationTop';
+// import Player from './Player';
+const Player = React.lazy(() => import('./Player'));
 const TableBody = ({ players }) => {
   return (
-    <table
-      id="player-table-body"
-      role="presentation"
-      className="table table--body"
-    >
-      <tbody>
-        {players.map(({ id, name, country, winnings, imageUrl }) => (
-          <tr key={id} role="row" className="table__row">
-            <td role="gridcell" className="table__avatar">
-              <Avatar src={imageUrl} />
-            </td>
-            <td role="gridcell" className="table__player">
-              {name}
-            </td>
-            <td role="gridcell" className="table__winnings">
-              {winnings.toLocaleString(undefined, {
-                style: 'currency',
-                currency: 'USD',
-              })}
-            </td>
-            <td role="gridcell" className="table__native">
-              <div className="country">
-                <Avatar>
-                  <Flags code={country} alt="" />
-                </Avatar>
-                {country}
-              </div>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <table
+        id="player-table-body"
+        role="presentation"
+        className="table table--body"
+      >
+        <tbody>
+          <PaginationTop />
+          {Array.isArray(players) ? (
+            players.map(({ id, name, country, winnings, imageUrl }) => (
+              <Suspense
+                key={id}
+                fallback={
+                  <tr>
+                    <td>Loading . . .</td>
+                  </tr>
+                }
+              >
+                <Player props={{ id, name, country, winnings, imageUrl }} />
+              </Suspense>
+            ))
+          ) : (
+            <div />
+          )}
+        </tbody>
+      </table>
+      <PaginationBottom />
+    </>
   );
 };
 

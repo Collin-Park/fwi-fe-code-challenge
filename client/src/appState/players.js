@@ -3,6 +3,7 @@ import { FETCH_PLAYERS_SUCCESS } from './constants';
 function mergePlayers(state, { players }) {
   const newState = { ...state };
   players.forEach((player) => {
+    player.imageUrl = player.imageUrl.replace(/-/g, ''); //pravatar doesnt support strings with dashes anymore
     newState[player.id] = player;
   });
   return newState;
