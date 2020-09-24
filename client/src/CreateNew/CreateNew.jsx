@@ -1,7 +1,6 @@
 import React from 'react';
-
-import './CreateNew.scss';
 import FormInput from '../FormInput/FormInput';
+import './CreateNew.scss';
 
 export default function CreateNew() {
   const newChar = {
