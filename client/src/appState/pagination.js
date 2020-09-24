@@ -3,31 +3,25 @@ import {
   FETCH_PLAYERS_SUCCESS,
 } from './constants';
 
-const mergePaginationData = (state, data, constant) => {
-  const { size, from, ...dataToPull } = data;
+const mergeFromRequest = (state, data) => {
   let newState;
-  if (constant == PAGINATION_CATEGORY_DIRECTION) {
-    newState = { ...state, ...data };
-  } else {
-    newState = { ...state, ...dataToPull };
-  }
+  newState = { ...state, ...data };
   return newState;
 };
 
-export default function pagination(state = {}, action) {
+const mergeFromFetch = (state, data) => {
+  const { size, from, ...dataToUse } = data;
+  let newState;
+  newState = { ...state, ...dataToUse };
+  return newState;
+};
+
+export default function pagination(state = { from: 0 }, action) {
   switch (action.type) {
     case PAGINATION_CATEGORY_DIRECTION:
-      return mergePaginationData(
-        state,
-        action.payload.data,
-        PAGINATION_CATEGORY_DIRECTION
-      );
+      return mergeFromRequest(state, action.payload.data);
     case FETCH_PLAYERS_SUCCESS:
-      return mergePaginationData(
-        state,
-        action.payload.data,
-        FETCH_PLAYERS_SUCCESS
-      );
+      return mergeFromFetch(state, action.payload.data);
     default:
       return state;
   }

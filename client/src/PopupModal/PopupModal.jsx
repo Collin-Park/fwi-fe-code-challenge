@@ -6,7 +6,7 @@ import FormInput from '../FormInput/FormInput';
 
 export default function PopupModal({ props }) {
   const { show, country, handleClose, name, winnings, id, imageUrl } = props;
-  props = { name, winnings, id, imageUrl, country };
+  props = { name, winnings, id, imageUrl, country, handleClose };
   return (
     <Modal show={show} onHide={handleClose} animation={false}>
       <Modal.Header closeButton>

@@ -1,26 +1,18 @@
 import React from 'react';
-import { Form, Button, Col } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { Formik } from 'formik';
-import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPagination, fetchPlayersWithParams } from '../appState/actions';
+import { calculateNewNumbers } from '../util';
+import { paginationTopSchema } from '../schema';
 
-const schema = yup.object({
-  perPage: yup.number().positive().integer().required(),
-});
+const schema = paginationTopSchema;
 
 export default function PaginationTop() {
   const pagination = useSelector((state) => state.pagination);
   const dispatch = useDispatch();
-  const { size, total, active } = pagination;
-  const calculateNewNumbers = (size, total, active) => {
-    let minPage = 1;
-    let maxPage = Math.ceil(total / size);
-    if (maxPage <= 5) return [minPage, maxPage];
-    else if (maxPage > 5 && active < 3) return [1, 5];
-    else if (maxPage - active < 3) return [maxPage - 4, maxPage];
-    else return [active - 2, active + 2];
-  };
+  const { size, total } = pagination;
+
   const changePerPage = (e) => {
     const number = calculateNewNumbers(e.perPage, total, 1);
     dispatch(setPagination({ size: e.perPage, active: 1, from: 0, number }));
@@ -45,6 +37,7 @@ export default function PaginationTop() {
           {({ handleSubmit, handleChange, handleBlur, values, errors }) => (
             <Form noValidate onSubmit={handleSubmit}>
               <Form.Row>
+                <span className="p-0 m-0 pt-1 mr-2">Number per page:</span>
                 <Form.Group className="m-0" controlId="validationFormik10">
                   <Form.Control
                     type="text"
@@ -57,8 +50,8 @@ export default function PaginationTop() {
                   />
                   <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                 </Form.Group>
-                <Button className="btn btn-secondary btn-sm" type="submit">
-                  >
+                <Button className="ml-1 btn btn-secondary btn-sm" type="submit">
+                  <p className="m-0 p-0 ">Go ></p>
                 </Button>
               </Form.Row>
             </Form>

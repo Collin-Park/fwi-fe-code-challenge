@@ -6,7 +6,7 @@ import FormInput from '../FormInput/FormInput';
 export default function CreateNew() {
   const newChar = {
     name: 'Insert Name',
-    winnings: 1337,
+    winnings: Math.ceil((Math.random() + 1) * 2000),
     country: 'AL',
     imageUrl: '',
   };
